@@ -1,9 +1,8 @@
 <script setup>
-import { modalPropNames, prefetch as prefetchModal, useModalStack } from './modalStack'
-import { computed, onBeforeUnmount, onMounted, provide, ref, useAttrs, watch } from 'vue'
+import { modalPropNames, useModalStack, prefetch as prefetchModal } from './modalStack'
+import { ref, provide, computed, watch, useAttrs, onBeforeUnmount, onMounted } from 'vue'
 import { only, rejectNullValues } from './helpers'
 import { getConfig } from './config'
-import { shouldIntercept } from '@inertiajs/core'
 
 const props = defineProps({
     href: {
@@ -127,35 +126,26 @@ function doPrefetch() {
     })
 }
 
-function onMouseenter(event) {
-    if (shouldIntercept(event)) {
-        event.preventDefault()
-        if (!prefetchModes.value.includes('hover')) return
+function onMouseenter() {
+    if (!prefetchModes.value.includes('hover')) return
 
-        hoverTimeout.value = setTimeout(() => {
-            doPrefetch()
-        }, 75) // Small delay to avoid prefetching on accidental hovers
-    }
+    hoverTimeout.value = setTimeout(() => {
+        doPrefetch()
+    }, 75) // Small delay to avoid prefetching on accidental hovers
 }
 
-function onMouseleave(event) {
-    if (shouldIntercept(event)) {
-        event.preventDefault()
-        if (hoverTimeout.value) {
-            clearTimeout(hoverTimeout.value)
-            hoverTimeout.value = null
-        }
+function onMouseleave() {
+    if (hoverTimeout.value) {
+        clearTimeout(hoverTimeout.value)
+        hoverTimeout.value = null
     }
 }
 
 function onMousedown(event) {
-    if (shouldIntercept(event)) {
-        event.preventDefault()
-        if (!prefetchModes.value.includes('click')) return
-        if (event.button !== 0) return // Only left click
+    if (!prefetchModes.value.includes('click')) return
+    if (event.button !== 0) return // Only left click
 
-        doPrefetch()
-    }
+    doPrefetch()
 }
 
 onMounted(() => {
@@ -210,41 +200,36 @@ function onAfterLeave() {
     emit('after-leave')
 }
 
-function handle(event) {
-    // Ensure the click is a standard click
-    if (shouldIntercept(event)) {
-        event.preventDefault()
-
-        if (loading.value) {
-            return
-        }
-
-        if (!props.href.startsWith('#')) {
-            loading.value = true
-            emit('start')
-        }
-
-        modalStack
-            .visit(
-                props.href,
-                props.method,
-                props.data,
-                props.headers,
-                rejectNullValues(only(props, modalPropNames)),
-                onClose,
-                onAfterLeave,
-                props.queryStringArrayFormat,
-                shouldNavigate.value,
-            )
-            .then((context) => {
-                modalContext.value = context
-            })
-            .catch((error) => {
-                console.error(error)
-                emit('error', error)
-            })
-            .finally(() => (loading.value = false))
+function handle() {
+    if (loading.value) {
+        return
     }
+
+    if (!props.href.startsWith('#')) {
+        loading.value = true
+        emit('start')
+    }
+
+    modalStack
+        .visit(
+            props.href,
+            props.method,
+            props.data,
+            props.headers,
+            rejectNullValues(only(props, modalPropNames)),
+            onClose,
+            onAfterLeave,
+            props.queryStringArrayFormat,
+            shouldNavigate.value,
+        )
+        .then((context) => {
+            modalContext.value = context
+        })
+        .catch((error) => {
+            console.error(error)
+            emit('error', error)
+        })
+        .finally(() => (loading.value = false))
 }
 </script>
 
@@ -253,7 +238,7 @@ function handle(event) {
         v-bind="$attrs"
         :is="as"
         :href="href"
-        @click="handle"
+        @click.prevent="handle"
         @mouseenter="onMouseenter"
         @mouseleave="onMouseleave"
         @mousedown="onMousedown"

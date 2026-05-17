@@ -2,7 +2,7 @@ import { computed, provide, openBlock, createBlock, unref, mergeProps, createCom
 import { generateId as generateId$1, only, sameUrlPath, kebabCase, except, cancelAnimations, onEscapeKey, createFocusTrap, animate, lockScroll, markAriaHidden, rejectNullValues } from "@inertiaui/vanilla";
 import * as vanilla from "@inertiaui/vanilla";
 import { usePage, router, http, progress } from "@inertiajs/vue3";
-import { mergeDataIntoQueryString, shouldIntercept } from "@inertiajs/core";
+import { mergeDataIntoQueryString } from "@inertiajs/core";
 const defaultConfig = {
   type: "modal",
   navigate: false,
@@ -1079,7 +1079,7 @@ const _sfc_main$4 = {
       }, [
         createElementVNode("div", _hoisted_1$2, [
           createElementVNode("div", {
-            class: normalizeClass(["im-modal-positioner flex min-h-full justify-center native-dialog", {
+            class: normalizeClass(["im-modal-positioner flex min-h-full justify-center", {
               "items-start": __props.config.position === "top",
               "items-center": __props.config.position === "center",
               "items-end": __props.config.position === "bottom"
@@ -1710,31 +1710,22 @@ const _sfc_main$1 = {
         onPrefetched: () => emit("prefetched")
       });
     }
-    function onMouseenter(event) {
-      if (shouldIntercept(event)) {
-        event.preventDefault();
-        if (!prefetchModes.value.includes("hover")) return;
-        hoverTimeout.value = setTimeout(() => {
-          doPrefetch();
-        }, 75);
-      }
+    function onMouseenter() {
+      if (!prefetchModes.value.includes("hover")) return;
+      hoverTimeout.value = setTimeout(() => {
+        doPrefetch();
+      }, 75);
     }
-    function onMouseleave(event) {
-      if (shouldIntercept(event)) {
-        event.preventDefault();
-        if (hoverTimeout.value) {
-          clearTimeout(hoverTimeout.value);
-          hoverTimeout.value = null;
-        }
+    function onMouseleave() {
+      if (hoverTimeout.value) {
+        clearTimeout(hoverTimeout.value);
+        hoverTimeout.value = null;
       }
     }
     function onMousedown(event) {
-      if (shouldIntercept(event)) {
-        event.preventDefault();
-        if (!prefetchModes.value.includes("click")) return;
-        if (event.button !== 0) return;
-        doPrefetch();
-      }
+      if (!prefetchModes.value.includes("click")) return;
+      if (event.button !== 0) return;
+      doPrefetch();
     }
     onMounted(() => {
       if (prefetchModes.value.includes("mount")) {
@@ -1778,38 +1769,35 @@ const _sfc_main$1 = {
       modalContext.value = null;
       emit("after-leave");
     }
-    function handle(event) {
-      if (shouldIntercept(event)) {
-        event.preventDefault();
-        if (loading.value) {
-          return;
-        }
-        if (!props.href.startsWith("#")) {
-          loading.value = true;
-          emit("start");
-        }
-        modalStack.visit(
-          props.href,
-          props.method,
-          props.data,
-          props.headers,
-          rejectNullValues(only(props, modalPropNames)),
-          onClose,
-          onAfterLeave,
-          props.queryStringArrayFormat,
-          shouldNavigate.value
-        ).then((context) => {
-          modalContext.value = context;
-        }).catch((error) => {
-          console.error(error);
-          emit("error", error);
-        }).finally(() => loading.value = false);
+    function handle() {
+      if (loading.value) {
+        return;
       }
+      if (!props.href.startsWith("#")) {
+        loading.value = true;
+        emit("start");
+      }
+      modalStack.visit(
+        props.href,
+        props.method,
+        props.data,
+        props.headers,
+        rejectNullValues(only(props, modalPropNames)),
+        onClose,
+        onAfterLeave,
+        props.queryStringArrayFormat,
+        shouldNavigate.value
+      ).then((context) => {
+        modalContext.value = context;
+      }).catch((error) => {
+        console.error(error);
+        emit("error", error);
+      }).finally(() => loading.value = false);
     }
     return (_ctx, _cache) => {
       return openBlock(), createBlock(resolveDynamicComponent(__props.as), mergeProps(unref($attrs), {
         href: __props.href,
-        onClick: handle,
+        onClick: withModifiers(handle, ["prevent"]),
         onMouseenter,
         onMouseleave,
         onMousedown

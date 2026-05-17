@@ -246,7 +246,7 @@ watch(
     >
         <div class="im-modal-container fixed inset-0 overflow-y-auto p-4">
             <div
-                class="im-modal-positioner flex min-h-full justify-center native-dialog"
+                class="im-modal-positioner flex min-h-full justify-center"
                 :class="{
                     'items-start': config.position === 'top',
                     'items-center': config.position === 'center',
