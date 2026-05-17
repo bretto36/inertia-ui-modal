@@ -1007,10 +1007,13 @@
     );
     const handleDialogClick = React.useCallback(
       (event) => {
-        if (event.target === dialogRef.current) {
-          if (modalContext.onTopOfStack && !config?.closeExplicitly && config?.closeOnClickOutside !== false) {
-            modalContext.close();
-          }
+        if (!modalContext.onTopOfStack || config?.closeExplicitly || config?.closeOnClickOutside === false) {
+          return;
+        }
+        const clickTarget = event.target;
+        if (!clickTarget) return;
+        if (nativeWrapperRef.current && !nativeWrapperRef.current.contains(clickTarget)) {
+          modalContext.close();
         }
       },
       [modalContext, config?.closeExplicitly, config?.closeOnClickOutside]
@@ -1255,10 +1258,13 @@
     );
     const handleDialogClick = React.useCallback(
       (event) => {
-        if (event.target === dialogRef.current) {
-          if (modalContext.onTopOfStack && !config?.closeExplicitly && config?.closeOnClickOutside !== false) {
-            modalContext.close();
-          }
+        if (!modalContext.onTopOfStack || config?.closeExplicitly || config?.closeOnClickOutside === false) {
+          return;
+        }
+        const clickTarget = event.target;
+        if (!clickTarget) return;
+        if (nativeWrapperRef.current && !nativeWrapperRef.current.contains(clickTarget)) {
+          modalContext.close();
         }
       },
       [modalContext, config?.closeExplicitly, config?.closeOnClickOutside]

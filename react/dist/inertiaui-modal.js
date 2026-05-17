@@ -993,10 +993,13 @@ const ModalContent = ({ modalContext, config, useNativeDialog, isFirstModal, onA
   );
   const handleDialogClick = useCallback(
     (event) => {
-      if (event.target === dialogRef.current) {
-        if (modalContext.onTopOfStack && !config?.closeExplicitly && config?.closeOnClickOutside !== false) {
-          modalContext.close();
-        }
+      if (!modalContext.onTopOfStack || config?.closeExplicitly || config?.closeOnClickOutside === false) {
+        return;
+      }
+      const clickTarget = event.target;
+      if (!clickTarget) return;
+      if (nativeWrapperRef.current && !nativeWrapperRef.current.contains(clickTarget)) {
+        modalContext.close();
       }
     },
     [modalContext, config?.closeExplicitly, config?.closeOnClickOutside]
@@ -1241,10 +1244,13 @@ const SlideoverContent = ({ modalContext, config, useNativeDialog, isFirstModal,
   );
   const handleDialogClick = useCallback(
     (event) => {
-      if (event.target === dialogRef.current) {
-        if (modalContext.onTopOfStack && !config?.closeExplicitly && config?.closeOnClickOutside !== false) {
-          modalContext.close();
-        }
+      if (!modalContext.onTopOfStack || config?.closeExplicitly || config?.closeOnClickOutside === false) {
+        return;
+      }
+      const clickTarget = event.target;
+      if (!clickTarget) return;
+      if (nativeWrapperRef.current && !nativeWrapperRef.current.contains(clickTarget)) {
+        modalContext.close();
       }
     },
     [modalContext, config?.closeExplicitly, config?.closeOnClickOutside]
