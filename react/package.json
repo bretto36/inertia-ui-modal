@@ -1,12 +1,12 @@
 {
-    "name": "@inertiaui/modal-react",
+    "name": "@brett.b/modal-react",
     "author": "Pascal Baljet <pascal@protone.media>",
     "version": "3.1.1",
     "private": false,
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/inertiaui/modal.git",
+        "url": "git+https://github.com/bretto36/inertia-ui-modal",
         "directory": "react"
     },
     "type": "module",
