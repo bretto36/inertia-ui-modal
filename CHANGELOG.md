@@ -2,6 +2,14 @@
 
 All notable changes to `inertiaui/modal` will be documented in this file.
 
+## 3.1.1 - 2026-05-17
+
+**Full Changelog**: https://github.com/bretto36/inertia-ui-modal/commits/3.1.1
+
+## v3.1.1 - 2026-05-17
+
+**Full Changelog**: https://github.com/bretto36/inertia-ui-modal/commits/3.1.1
+
 ## 3.1.0 - 2026-04-26
 
 ### What's Changed
